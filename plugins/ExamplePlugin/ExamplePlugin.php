@@ -36,18 +36,29 @@ class ExamplePlugin implements SplObserver {
 		Log::error(Database::get(), __METHOD__, __LINE__, (string)$album->get()["title"]);
 		
 		if ($album->get()['title'] === '自動分類') {
-			$newAlbumID = $album->add("もぐの", true);
+			$takeTM = strptime($photo->get()['takedate'], '%d %B %Y - %H:%M');
+			if ($takeTM == false) {
+				$albumName = "撮影日情報なし";
+			} else {
+				$takeTime = mktime($takeTM['tm_hour'], $takeTM['tm_min'], $takeTM['tm_sec'], $takeTM['tm_mon'] + 1, $takeTM['tm_mday'], $takeTM['tm_year'] + 1900);
+
+				$albumName = strftime("%Y/%m/%d", $takeTime);
+			}
+
+			Log::error(Database::get(), __METHOD__, __LINE__, $albumName);
+
+			$newAlbumID = $album->add($albumName, true);
 			$photo->setAlbum($newAlbumID);
 		}
 
-		Log::error(Database::get(), __METHOD__, __LINE__, (string)var_export($album->get(), true));
+#		Log::error(Database::get(), __METHOD__, __LINE__, (string)var_export($album->get(), true));
 
 		Log::error(Database::get(), __METHOD__, __LINE__, (string)$subject->action);
 
 
-		#if ($album.get
-		
 
+		Log::error(Database::get(), __METHOD__, __LINE__, (string)var_export(strptime($photo->get()['takedate'], '%d %B %Y - %H:%M'), true));
+		#if ($album.get
 
 		return true;
 
