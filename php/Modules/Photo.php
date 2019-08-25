@@ -1502,7 +1502,10 @@ final class Photo {
 		$result = $result && Database::execute(Database::get(), $query, __METHOD__, __LINE__);
 
 		// Call plugins
-		Plugins::get()->activate(__METHOD__, 1, func_get_args());
+		$src = $this;
+		$dest = new Album($albumID);
+
+		Plugins::get()->activate(__METHOD__, 1, array("src" => $src, "dest" => $dest));
 
 		if ($result===false) return false;
 		return true;
